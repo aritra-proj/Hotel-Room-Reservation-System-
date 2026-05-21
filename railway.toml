@@ -10,6 +10,11 @@
 builder      = "nixpacks"
 buildCommand = "npm run build"
 
+# Tell Nixpacks explicitly which Node version to use.
+# Next.js 16 requires Node >= 20.9.0; Railway's default is Node 18.
+[build.nixpacksPlan.variables]
+NIXPACKS_NODE_VERSION = "20"
+
 [deploy]
 # `next start` automatically reads the PORT env var that Railway injects.
 startCommand          = "npm start"
