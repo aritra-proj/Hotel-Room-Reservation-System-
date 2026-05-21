@@ -1,0 +1,17 @@
+# railway.toml – Railway deployment configuration for AuraStay
+#
+# Railway will use Nixpacks to detect a Next.js project and automatically
+# choose the right Node version. We override the build/start commands here
+# to be explicit and avoid any ambiguity.
+#
+# See: https://docs.railway.com/reference/config-as-code
+
+[build]
+builder      = "nixpacks"
+buildCommand = "npm run build"
+
+[deploy]
+# `next start` automatically reads the PORT env var that Railway injects.
+startCommand          = "npm start"
+restartPolicyType     = "on_failure"
+restartPolicyMaxRetries = 10

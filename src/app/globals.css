@@ -1,26 +1,817 @@
-@import "tailwindcss";
+/* ============================================================
+   globals.css  –  AuraStay Design System
+   Premium dark-space theme with neon accents.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+/* ── Design tokens ─────────────────────────────────────────── */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Backgrounds */
+  --bg-main:         #06060c;
+  --bg-gradient:     radial-gradient(circle at 50% 50%, #0d0d21 0%, #05050a 100%);
+  --bg-card:         rgba(13, 13, 30, 0.65);
+  --bg-card-hover:   rgba(22, 22, 48, 0.85);
+
+  /* Borders */
+  --border-color:    rgba(99, 102, 241, 0.15);
+  --border-glow:     rgba(99, 102, 241, 0.3);
+
+  /* Brand accents */
+  --accent-primary:     #6366f1;   /* Electric indigo */
+  --accent-primary-rgb: 99, 102, 241;
+  --accent-cyan:        #06b6d4;   /* Neon cyan */
+  --accent-cyan-rgb:    6, 182, 212;
+  --accent-gold:        #f59e0b;   /* Golden glow */
+  --accent-gold-rgb:    245, 158, 11;
+
+  /* Room state colours */
+  --room-available:        #10b981;
+  --room-available-bg:     rgba(16, 185, 129, 0.08);
+  --room-available-border: rgba(16, 185, 129, 0.3);
+
+  --room-occupied:         #f43f5e;
+  --room-occupied-bg:      rgba(244, 63, 94, 0.08);
+  --room-occupied-border:  rgba(244, 63, 94, 0.3);
+
+  --room-selected:         #f59e0b;
+  --room-selected-bg:      rgba(245, 158, 11, 0.18);
+  --room-selected-border:  rgba(245, 158, 11, 0.8);
+
+  /* Typography */
+  --text-main:         #f8fafc;
+  --text-muted:        #94a3b8;
+  --text-dim:          #64748b;
+  --font-title:        'Outfit', sans-serif;
+  --font-body:         'Plus Jakarta Sans', sans-serif;
+
+  /* Motion & shadows */
+  --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast:   all 0.15s ease;
+  --shadow-premium:    0 10px 30px -10px rgba(0, 0, 0, 0.7);
+  --shadow-glow:       0 0 20px rgba(99, 102, 241, 0.15);
+  --glass-blur:        blur(12px);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ── Reset ─────────────────────────────────────────────────── */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-main);
+  background-image: var(--bg-gradient);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: rgba(13, 13, 30, 0.4); }
+::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.3); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.5); }
+
+/* ── Page shell ────────────────────────────────────────────── */
+
+.dashboard-container {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 24px;
+  max-width: 1540px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  min-height: calc(100vh - 100px);
+}
+
+@media (max-width: 1200px) {
+  .dashboard-container { grid-template-columns: 1fr; }
+}
+
+/* ── Header ────────────────────────────────────────────────── */
+
+.header-wrapper {
+  background: rgba(6, 6, 12, 0.7);
+  backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--border-color);
+  padding: 20px 40px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-logo h1 {
+  font-family: var(--font-title);
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, #ffffff 0%, var(--text-muted) 50%, var(--accent-primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header-logo span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent-cyan);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.header-meta {
+  display: flex;
+  gap: 20px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* ── Glass cards ───────────────────────────────────────────── */
+
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: var(--shadow-premium), var(--shadow-glow);
+  transition: var(--transition-smooth);
+}
+
+.glass-panel:hover {
+  border-color: rgba(99, 102, 241, 0.25);
+  box-shadow: var(--shadow-premium), 0 0 25px rgba(99, 102, 241, 0.22);
+}
+
+/* ── Sidebar layout ────────────────────────────────────────── */
+
+.control-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.control-group { margin-bottom: 20px; }
+
+.control-label {
+  display: block;
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+/* ── Range slider ──────────────────────────────────────────── */
+
+.slider-container { display: flex; align-items: center; gap: 16px; }
+
+.custom-range {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.08);
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+}
+
+.custom-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  box-shadow: 0 0 10px var(--accent-primary);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.custom-range::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+.range-badge {
+  font-family: var(--font-title);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  background: rgba(6, 182, 212, 0.15);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+/* ── Buttons ───────────────────────────────────────────────── */
+
+.btn {
+  width: 100%;
+  padding: 14px 24px;
+  font-family: var(--font-title);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: var(--transition-smooth);
+}
+
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, #4f46e5 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+}
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+}
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  color: #fda4af;
+}
+.btn-danger:hover:not(:disabled) {
+  background: rgba(244, 63, 94, 0.2);
+  border-color: rgba(244, 63, 94, 0.5);
+  transform: translateY(-1px);
+}
+
+/* ── Stats grid ────────────────────────────────────────────── */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.stat-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 14px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.stat-num {
+  font-family: var(--font-title);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.stat-num.cyan    { color: var(--accent-cyan); }
+.stat-num.emerald { color: var(--room-available); }
+.stat-num.rose    { color: var(--room-occupied); }
+.stat-num.gold    { color: var(--accent-gold); }
+
+.stat-label {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+/* ── Active booking result card ────────────────────────────── */
+
+.results-card { border-left: 4px solid var(--accent-gold); }
+
+.result-rooms-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.result-room-tag {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 0.85rem;
+  background: var(--room-selected-bg);
+  border: 1px solid var(--room-selected-border);
+  color: var(--accent-gold);
+  padding: 4px 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.15);
+}
+
+.result-metric {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 10px;
+  margin-top: 10px;
+  font-size: 0.85rem;
+}
+
+.result-time {
+  font-family: var(--font-title);
+  font-weight: 700;
+  color: var(--accent-cyan);
+}
+
+/* Inline formula explainer shown beneath the active booking */
+.travel-formula {
+  margin-top: 10px;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  font-style: italic;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 8px;
+}
+
+.result-empty {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  font-style: italic;
+  text-align: center;
+}
+
+/* ── Preview hint bar (shown between slider and Book button) ── */
+/*
+   Gives instant text feedback while the user drags the slider,
+   listing which rooms would be booked and the expected travel time.
+*/
+
+.preview-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+.preview-hint strong {
+  color: #a5b4fc; /* light indigo */
+}
+
+.preview-hint--warn {
+  background: rgba(244, 63, 94, 0.08);
+  border-color: rgba(244, 63, 94, 0.2);
+  color: #fda4af;
+}
+
+/* Small pulsing indigo dot before the preview text */
+.preview-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  flex-shrink: 0;
+  animation: preview-pulse 1.4s infinite ease-in-out;
+}
+
+@keyframes preview-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.3); }
+}
+
+/* ── Error banner ──────────────────────────────────────────── */
+
+.error-banner {
+  background: rgba(244, 63, 94, 0.15);
+  border: 1px solid rgba(244, 63, 94, 0.4);
+  color: #fda4af;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  margin-top: 12px;
+  text-align: center;
+}
+
+/* ── Booking history panel ─────────────────────────────────── */
+
+/* Badge showing total booking count */
+.history-count {
+  font-family: var(--font-title);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+
+/* Scrollable list container – shows up to 5 entries before scrolling */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Individual history entry card */
+.history-item {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 12px 14px;
+  transition: var(--transition-fast);
+}
+
+.history-item:hover {
+  background: rgba(99, 102, 241, 0.07);
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+/* Top row: booking ID + timestamp */
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.history-id {
+  font-family: var(--font-title);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  letter-spacing: 0.5px;
+}
+
+.history-time {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+/* Room number tags inside history entries */
+.history-rooms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.history-room-tag {
+  font-family: var(--font-title);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  color: var(--text-muted);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+/* Bottom metadata row: floor range + travel time */
+.history-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.history-travel {
+  color: var(--accent-cyan);
+  font-weight: 600;
+}
+
+/* ── Hotel visualiser panel ────────────────────────────────── */
+
+.hotel-visualizer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Outer building frame */
+.hotel-facade {
+  display: flex;
+  flex-direction: column;
+  background: rgba(10, 10, 25, 0.4);
+  border: 2px solid rgba(99, 102, 241, 0.1);
+  border-radius: 24px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Rainbow top accent bar */
+.hotel-facade::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-cyan), var(--accent-gold));
+}
+
+/* One horizontal row per floor */
+.floor-row {
+  display: grid;
+  grid-template-columns: 38px 40px 1fr;
+  align-items: center;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.04);
+  padding: 8px 0;
+  transition: var(--transition-fast);
+}
+
+.floor-row:last-child { border-bottom: none; }
+.floor-row:hover { background: rgba(255, 255, 255, 0.01); }
+
+/* Floor number label */
+.floor-label {
+  font-family: var(--font-title);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Lift shaft column */
+.lift-shaft-cell {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  padding-right: 8px;
+  height: 100%;
+}
+
+.lift-rail {
+  width: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  height: 100%;
+  position: absolute;
+  border-radius: 2px;
+}
+
+/* Animated lift cabin indicator */
+.lift-cabin {
+  width: 22px;
+  height: 22px;
+  background: radial-gradient(circle, var(--accent-cyan) 0%, var(--accent-primary) 100%);
+  border: 2px solid white;
+  border-radius: 6px;
+  z-index: 2;
+  box-shadow: 0 0 12px var(--accent-cyan);
+  transition: transform 0.5s ease-in-out;
+}
+
+/* Rooms grid for each floor */
+.rooms-row-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 8px;
+  padding-left: 16px;
+}
+
+.rooms-row-grid.top-floor {
+  grid-template-columns: repeat(10, 1fr); /* keep same 10-col structure */
+}
+
+/* Invisible placeholder for the 3 missing rooms on floor 10 */
+.room-empty-placeholder {
+  pointer-events: none;
+  background: transparent;
+}
+
+/* ── Room node ─────────────────────────────────────────────── */
+
+.room-node {
+  background: var(--room-available-bg);
+  border: 1px solid var(--room-available-border);
+  color: var(--room-available);
+  border-radius: 9px;
+  padding: 8px 3px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 46px;
+}
+
+.room-node:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.25);
+  border-color: rgba(16, 185, 129, 0.6);
+}
+
+/* Occupied state */
+.room-node.occupied {
+  background: var(--room-occupied-bg);
+  border-color: var(--room-occupied-border);
+  color: var(--room-occupied);
+  cursor: not-allowed;
+}
+.room-node.occupied:hover { transform: none; box-shadow: none; }
+
+/* Preview state – indigo glow (candidate rooms for the NEXT booking)
+   This is the state that reacts to slider changes in real time.
+   It is always cleared/replaced when the user confirms a booking. */
+.room-node.preview {
+  background: rgba(99, 102, 241, 0.12);
+  border-color: rgba(99, 102, 241, 0.55);
+  color: #a5b4fc;
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.25);
+  animation: preview-room-pulse 1.6s infinite ease-in-out;
+}
+.room-node.preview:hover {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+  border-color: rgba(99, 102, 241, 0.9);
+}
+
+@keyframes preview-room-pulse {
+  0%, 100% { box-shadow: 0 0 8px  rgba(99, 102, 241, 0.2); border-color: rgba(99, 102, 241, 0.45); }
+  50%       { box-shadow: 0 0 18px rgba(99, 102, 241, 0.55); border-color: rgba(99, 102, 241, 0.85); }
+}
+
+/* Selected (most-recent CONFIRMED booking) state – gold pulsing */
+.room-node.selected {
+  background: var(--room-selected-bg);
+  border-color: var(--room-selected-border);
+  color: var(--room-selected);
+  box-shadow: 0 0 18px var(--room-selected-border);
+  animation: pulse-border 1.8s infinite ease-in-out;
+}
+.room-node.selected:hover { box-shadow: 0 0 25px var(--room-selected); }
+
+/* Text inside room nodes */
+.room-no {
+  font-family: var(--font-title);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.room-col-idx {
+  font-size: 0.52rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.room-node.occupied .room-col-idx  { color: rgba(244, 63, 94, 0.4); }
+.room-node.preview  .room-col-idx  { color: rgba(99, 102, 241, 0.6); }
+.room-node.selected .room-col-idx  { color: rgba(245, 158, 11, 0.7); }
+
+/* ── Tooltip ───────────────────────────────────────────────── */
+
+.tooltip {
+  visibility: hidden;
+  position: absolute;
+  bottom: 115%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(13, 13, 30, 0.96);
+  border: 1px solid var(--accent-primary);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.65rem;
+  white-space: nowrap;
+  z-index: 20;
+  box-shadow: var(--shadow-premium);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  line-height: 1.7;
+}
+
+.room-node:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* ── Legend ────────────────────────────────────────────────── */
+
+.visualizer-legend {
+  display: flex;
+  gap: 20px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.legend-dot.available { background: var(--room-available-bg); border: 1px solid var(--room-available); }
+.legend-dot.preview   { background: rgba(99,102,241,0.12);   border: 1px solid rgba(99,102,241,0.55); box-shadow: 0 0 5px rgba(99,102,241,0.3); }
+.legend-dot.selected  { background: var(--room-selected-bg);  border: 1px solid var(--room-selected); box-shadow: 0 0 6px var(--room-selected); }
+.legend-dot.occupied  { background: var(--room-occupied-bg);  border: 1px solid var(--room-occupied); }
+
+/* ── Travel explainer bar ──────────────────────────────────── */
+
+.travel-explainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.explainer-divider { color: rgba(255, 255, 255, 0.15); }
+
+/* ── Loading overlay ───────────────────────────────────────── */
+
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 5, 10, 0.85);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  border-radius: 24px;
+  backdrop-filter: blur(8px);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(99, 102, 241, 0.15);
+  border-left-color: var(--accent-cyan);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  font-family: var(--font-title);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 16px;
+  letter-spacing: 1px;
+}
+
+/* ── Keyframe animations ───────────────────────────────────── */
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-border {
+  0%   { box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); border-color: rgba(245, 158, 11, 0.6); }
+  50%  { box-shadow: 0 0 25px rgba(245, 158, 11, 0.9); border-color: rgba(245, 158, 11, 1); }
+  100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); border-color: rgba(245, 158, 11, 0.6); }
 }
